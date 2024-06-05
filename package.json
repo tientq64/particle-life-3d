@@ -1,7 +1,7 @@
 {
 	"name": "particle-life-3d",
 	"private": true,
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"type": "module",
 	"description": "🦠 Life is created from elementary particles.",
 	"keywords": [

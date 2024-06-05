@@ -315,7 +315,7 @@ function App() {
 					/>
 				</div>
 
-				<div className="absolute right-4 bottom-2 pointer-events-auto">
+				<div className="absolute 2xl:right-6 xl:right-4 bottom-2 text-sm pointer-events-auto">
 					<a
 						className="text-sky-400"
 						href="https://www.flaticon.com/free-icons/quantum"
