@@ -1,14 +1,20 @@
 {
+	"Ẩn": "非表示",
 	"Bán kính phạm vi di chuyển": "移動範囲半径",
-	"Hiện / ẩn đồ họa hỗ trợ": "ヘルパーグラフィックの表示/非表示",
 	"Bật / tắt tự động xoay xung quanh": "自動回転のオン/オフ",
+	"Chỉ hiện khi kéo": "ドラッグ時のみ表示",
+	"Chuột giữa": "中央のクリック",
 	"Chuột trái+Kéo": "左クリック+ドラッグ",
 	"Chuyển đổi ngôn ngữ": "言語の切り替え",
 	"Cuộn chuột": "マウススクロール",
+	"Đặt lại thu phóng": "ズームをリセットします",
 	"Giả chiều sâu": "偽の深度",
 	"Giảm tốc độ xuống khi đạt tối đa": "最大に達したときに速度を下げる",
 	"Giới hạn vận tốc hạt": "パーティクルの速度を制限する",
+	"Hiện / ẩn đồ họa hỗ trợ": "ヘルパーグラフィックの表示/非表示",
 	"Hiện đồ họa hỗ trợ": "ヘルパーグラフィックを表示",
+	"Hiện": "表示",
+	"Khôi phục các tùy chọn về mặc định": "デフォルトオプションを復元します",
 	"Lực đẩy lại khi ngoài phạm vi di chuyển": "移動範囲外になったときに押し戻す",
 	"Ngẫu nhiên lực, xáo trộn các hạt": "ランダムな力、パーティクルをシャッフル",
 	"Nhấn <1>R</1> để xáo trộn các hạt": "パーティクルをシャッフルするには <1>R</1> を押します",
@@ -21,8 +27,5 @@
 	"Tốc độ tự động xoay xung quanh": "速度が自動的に回転する",
 	"Tự động xoay xung quanh": "自動的に回転する",
 	"Vận tốc hạt tối đa": "パーティクルの最大速度",
-	"Xoay xung quanh": "回転する",
-	"Khôi phục các tùy chọn về mặc định": "デフォルトオプションを復元します",
-	"Chuột giữa": "中央のクリック",
-	"Đặt lại thu phóng": "ズームをリセットします"
+	"Xoay xung quanh": "回転する"
 }

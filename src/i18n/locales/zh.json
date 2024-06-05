@@ -1,14 +1,20 @@
 {
+	"Ẩn": "隐藏",
 	"Bán kính phạm vi di chuyển": "移动范围半径",
-	"Hiện / ẩn đồ họa hỗ trợ": "显示/隐藏辅助图形",
 	"Bật / tắt tự động xoay xung quanh": "开启/关闭自动旋转",
+	"Chỉ hiện khi kéo": "仅拖动时可见",
+	"Chuột giữa": "中单击",
 	"Chuột trái+Kéo": "左点击+拖动",
 	"Chuyển đổi ngôn ngữ": "切换语言",
 	"Cuộn chuột": "鼠标滚动",
+	"Đặt lại thu phóng": "重置变焦",
 	"Giả chiều sâu": "伪深度",
 	"Giảm tốc độ xuống khi đạt tối đa": "达到最大值时降低速度",
 	"Giới hạn vận tốc hạt": "限制粒子速度",
+	"Hiện / ẩn đồ họa hỗ trợ": "显示/隐藏辅助图形",
 	"Hiện đồ họa hỗ trợ": "显示辅助图形",
+	"Hiện": "可见",
+	"Khôi phục các tùy chọn về mặc định": "还原默认选项",
 	"Lực đẩy lại khi ngoài phạm vi di chuyển": "超出移动范围时推回",
 	"Ngẫu nhiên lực, xáo trộn các hạt": "随机的力量，打乱粒子",
 	"Nhấn <1>R</1> để xáo trộn các hạt": "按 <1>R</1> 随机排列粒子",
@@ -21,8 +27,5 @@
 	"Tốc độ tự động xoay xung quanh": "速度自动旋转",
 	"Tự động xoay xung quanh": "自动旋转",
 	"Vận tốc hạt tối đa": "最大粒子速度",
-	"Xoay xung quanh": "旋转",
-	"Khôi phục các tùy chọn về mặc định": "还原默认选项",
-	"Chuột giữa": "中单击",
-	"Đặt lại thu phóng": "重置变焦"
+	"Xoay xung quanh": "旋转"
 }

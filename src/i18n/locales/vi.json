@@ -1,14 +1,20 @@
 {
+	"Ẩn": "Ẩn",
 	"Bán kính phạm vi di chuyển": "Bán kính phạm vi di chuyển",
-	"Hiện / ẩn đồ họa hỗ trợ": "Hiện / ẩn đồ họa hỗ trợ",
 	"Bật / tắt tự động xoay xung quanh": "Bật / tắt tự động xoay xung quanh",
+	"Chỉ hiện khi kéo": "Chỉ hiện khi kéo",
+	"Chuột giữa": "Chuột giữa",
 	"Chuột trái+Kéo": "Chuột trái+Kéo",
 	"Chuyển đổi ngôn ngữ": "Chuyển đổi ngôn ngữ",
 	"Cuộn chuột": "Cuộn chuột",
+	"Đặt lại thu phóng": "Đặt lại thu phóng",
 	"Giả chiều sâu": "Giả chiều sâu",
 	"Giảm tốc độ xuống khi đạt tối đa": "Giảm tốc độ xuống khi đạt tối đa",
 	"Giới hạn vận tốc hạt": "Giới hạn vận tốc hạt",
+	"Hiện / ẩn đồ họa hỗ trợ": "Hiện / ẩn đồ họa hỗ trợ",
 	"Hiện đồ họa hỗ trợ": "Hiện đồ họa hỗ trợ",
+	"Hiện": "Hiện",
+	"Khôi phục các tùy chọn về mặc định": "Khôi phục các tùy chọn về mặc định",
 	"Lực đẩy lại khi ngoài phạm vi di chuyển": "Lực đẩy lại khi ngoài phạm vi di chuyển",
 	"Ngẫu nhiên lực, xáo trộn các hạt": "Ngẫu nhiên lực, xáo trộn các hạt",
 	"Nhấn <1>R</1> để xáo trộn các hạt": "Nhấn <1>R</1> để xáo trộn các hạt",
@@ -21,8 +27,5 @@
 	"Tốc độ tự động xoay xung quanh": "Tốc độ tự động xoay xung quanh",
 	"Tự động xoay xung quanh": "Tự động xoay xung quanh",
 	"Vận tốc hạt tối đa": "Vận tốc hạt tối đa",
-	"Xoay xung quanh": "Xoay xung quanh",
-	"Khôi phục các tùy chọn về mặc định": "Khôi phục các tùy chọn về mặc định",
-	"Chuột giữa": "Chuột giữa",
-	"Đặt lại thu phóng": "Đặt lại thu phóng"
+	"Xoay xung quanh": "Xoay xung quanh"
 }

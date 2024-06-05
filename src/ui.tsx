@@ -242,12 +242,13 @@ function App() {
 
 						<Form.Item label={t('Hiện đồ họa hỗ trợ')}>
 							<Select
+								popupMatchSelectWidth={false}
 								value={store.helperVisibility}
 								onChange={store.setHelperVisibility}
 								options={[
-									{ value: 'hidden', label: 'Ẩn' },
-									{ value: 'visible', label: 'Hiện' },
-									{ value: 'visibleWhenDragging', label: 'Chỉ hiện khi kéo' }
+									{ value: 'hidden', label: t('Ẩn') },
+									{ value: 'visible', label: t('Hiện') },
+									{ value: 'visibleWhenDragging', label: t('Chỉ hiện khi kéo') }
 								]}
 							/>
 						</Form.Item>
@@ -270,6 +271,7 @@ function App() {
 
 						<Form.Item label="Language">
 							<Select
+								popupMatchSelectWidth={false}
 								value={i18n.language}
 								onChange={(value) => i18n.changeLanguage(value)}
 								options={[
