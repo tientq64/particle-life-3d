@@ -22,7 +22,7 @@ Particle Life 3D is a project that simulates particles moving and interacting in
 
 > Inspired by my previous [project](https://github.com/tientq64/particle-life) itself, but this one in 3D.
 
-## ⚙️ Key Features
+## ⚙️ Features
 
 - 3D Particle Simulation: Particles are created and move in 3D space.
 
