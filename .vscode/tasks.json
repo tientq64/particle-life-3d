@@ -11,7 +11,17 @@
 			},
 			"presentation": {
 				"reveal": "silent",
-				"showReuseMessage": false
+				"close": true
+			}
+		},
+		{
+			"label": "build",
+			"type": "shell",
+			"command":"npm run build",
+			"group": "build",
+			"presentation": {
+				"reveal": "silent",
+				"close": true
 			}
 		}
 	]

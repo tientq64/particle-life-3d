@@ -1,8 +1,22 @@
 {
 	"name": "particle-life-3d",
 	"private": true,
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"type": "module",
+	"description": "🦠 Life is created from elementary particles.",
+	"keywords": [
+		"particle-life",
+		"particles",
+		"simulation",
+		"zdog",
+		"3d",
+		"game-of-life"
+	],
+	"author": {
+		"name": "tientq64",
+		"email": "tientq64@gmail.com",
+		"url": "https://github.com/tientq64"
+	},
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc && vite build",
