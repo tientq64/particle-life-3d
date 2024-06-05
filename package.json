@@ -1,12 +1,13 @@
 {
 	"name": "particle-life-3d",
 	"private": true,
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"type": "module",
 	"description": "🦠 Life is created from elementary particles.",
 	"keywords": [
 		"particle-life",
 		"particles",
+		"physics-simulation",
 		"simulation",
 		"zdog",
 		"3d",
