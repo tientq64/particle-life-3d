@@ -10,8 +10,7 @@ i18n
 	.use(initReactI18next)
 	.use(detector)
 	.init({
-		fallbackLng: 'vi',
-		debug: true,
+		fallbackLng: 'en',
 		interpolation: {
 			escapeValue: false
 		},
