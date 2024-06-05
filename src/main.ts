@@ -169,6 +169,10 @@ function keydown(event: KeyboardEvent): void {
 			store.setIsSeparated(!store.isSeparated)
 			break
 
+		case 'KeyG':
+			store.setIsLimitedVelocity(!store.isLimitedVelocity)
+			break
+
 		case 'KeyQ':
 			store.setIsSpinning(!store.isSpinning)
 			break

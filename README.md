@@ -39,3 +39,7 @@ See demo [here](https://particle-life-3d.vercel.app).
 ## ✍️ Credits
 
 <a href="https://www.flaticon.com/free-icons/quantum" title="quantum icons" target="_blank">Quantum icons created by Vlad Szirka - Flaticon</a>
+
+## ☕ Support me
+
+[Buy me a coffee](https://ko-fi.com/tientq64). Thanks a lot.

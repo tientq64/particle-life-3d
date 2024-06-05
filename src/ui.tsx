@@ -1,6 +1,7 @@
 import {
 	Button,
 	ConfigProvider,
+	Divider,
 	Form,
 	InputNumber,
 	List,
@@ -10,6 +11,7 @@ import {
 	Switch,
 	Tag,
 	ThemeConfig,
+	Tooltip,
 	message,
 	theme
 } from 'antd'
@@ -69,6 +71,11 @@ function App() {
 				kbd: 'E',
 				description: t('Phân tách các hạt'),
 				click: () => store.setIsSeparated(!store.isSeparated)
+			},
+			{
+				kbd: 'G',
+				description: t('Bật / tắt giới hạn vận tốc hạt'),
+				click: () => store.setIsLimitedVelocity(!store.isLimitedVelocity)
 			},
 			{
 				kbd: 'Q',
@@ -163,7 +170,7 @@ function App() {
 	return (
 		<ConfigProvider theme={darkTheme}>
 			<div className="absolute inset-0 flex justify-between items-start pointer-events-none">
-				<div className="2xl:w-[400px] xl:w-[360px] lg:w-[340px] max-h-full p-4 pr-0 overflow-x-hidden pointer-events-auto">
+				<div className="2xl:w-[400px] xl:w-[360px] w-[340px] max-h-full p-4 pr-0 overflow-x-hidden pointer-events-auto">
 					<Form
 						form={form}
 						labelCol={{ span: 14 }}
@@ -269,7 +276,7 @@ function App() {
 							<InputNumber min={0.001} max={1} step={0.001} disabled={!store.isSpinning} />
 						</Form.Item>
 
-						<Form.Item label="Language">
+						<Form.Item label="Language / Ngôn ngữ">
 							<Select
 								popupMatchSelectWidth={false}
 								value={i18n.language}
@@ -289,7 +296,7 @@ function App() {
 					</Form>
 				</div>
 
-				<div className="2xl:w-[400px] xl:w-[360px] lg:w-[340px] max-h-full p-4 pl-0 2xl:pr-6 xl:pr-4 overflow-x-hidden pointer-events-auto">
+				<div className="2xl:w-[400px] xl:w-[360px] w-[340px] max-h-full p-4 pl-0 2xl:pr-6 xl:pr-4 overflow-x-hidden pointer-events-auto">
 					<List
 						size="small"
 						dataSource={keyboardShortcuts}
@@ -315,15 +322,48 @@ function App() {
 					/>
 				</div>
 
-				<div className="absolute 2xl:right-6 xl:right-4 bottom-2 text-sm pointer-events-auto">
-					<a
-						className="text-sky-400"
-						href="https://www.flaticon.com/free-icons/quantum"
-						title="quantum icons"
-						target="_blank"
-					>
-						Quantum icons created by Vlad Szirka - Flaticon
-					</a>
+				<div className="absolute 2xl:left-6 left-4 bottom-2 text-sm pointer-events-auto">
+					<ul className="flex">
+						<li>
+							<Tooltip title="github.com/tientq64/particle-life-3d">
+								<a
+									className="text-sky-400"
+									href="https://github.com/tientq64/particle-life-3d"
+									target="_blank"
+								>
+									Github
+								</a>
+							</Tooltip>
+							<Divider type="vertical" />
+
+							<a
+								className="text-sky-400"
+								href="https://github.com/tientq64/particle-life-3d/issues/new"
+								target="_blank"
+							>
+								{t('Báo cáo vấn đề')}
+							</a>
+							<Divider type="vertical" />
+
+							<Tooltip title="ko-fi.com/tientq64">
+								<a className="text-sky-400" href="https://ko-fi.com/tientq64" target="_blank">
+									Buy me a coffee
+								</a>
+							</Tooltip>
+						</li>
+					</ul>
+				</div>
+
+				<div className="absolute 2xl:right-6 right-4 bottom-2 text-sm pointer-events-auto">
+					<Tooltip title="flaticon.com/free-icons/quantum">
+						<a
+							className="text-sky-400"
+							href="https://www.flaticon.com/free-icons/quantum"
+							target="_blank"
+						>
+							Quantum icons created by Vlad Szirka - Flaticon
+						</a>
+					</Tooltip>
 				</div>
 			</div>
 		</ConfigProvider>
