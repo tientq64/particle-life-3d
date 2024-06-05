@@ -295,9 +295,7 @@ function App() {
 						renderItem={(item) => (
 							<List.Item
 								key={item.description}
-								className={clsx({
-									'hover:bg-gray-700/30 cursor-pointer': item.click
-								})}
+								className={item.click ? 'hover:bg-gray-700/30 cursor-pointer' : ''}
 								onClick={item.click}
 							>
 								<List.Item.Meta
@@ -314,6 +312,17 @@ function App() {
 							</List.Item>
 						)}
 					/>
+				</div>
+
+				<div className="absolute right-4 bottom-2 pointer-events-auto">
+					<a
+						className="text-sky-400"
+						href="https://www.flaticon.com/free-icons/quantum"
+						title="quantum icons"
+						target="_blank"
+					>
+						Quantum icons created by Vlad Szirka - Flaticon
+					</a>
 				</div>
 			</div>
 		</ConfigProvider>
