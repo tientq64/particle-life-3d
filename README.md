@@ -20,9 +20,9 @@
 
 Particle Life 3D is a project that simulates particles moving and interacting in 3D space, using Zdog as the 3D engine. This project creates a virtual environment where particles can collide, reflect, and interact with each other based on basic physical rules.
 
-Inspired by my previous [project](https://github.com/tientq64/particle-life) itself, but this one in 3D.
+> Inspired by my previous [project](https://github.com/tientq64/particle-life) itself, but this one in 3D.
 
-## Key Features
+## ⚙️ Key Features
 
 - 3D Particle Simulation: Particles are created and move in 3D space.
 
@@ -32,10 +32,10 @@ Inspired by my previous [project](https://github.com/tientq64/particle-life) its
 
 - Intuitive Interface: Provides an intuitive interface to observe the movements and interactions of the particles.
 
-## Usage
+## 💻 Usage
 
 See demo [here](https://particle-life-3d.vercel.app).
 
-## Credits
+## ✍️ Credits
 
 <a href="https://www.flaticon.com/free-icons/quantum" title="quantum icons" target="_blank">Quantum icons created by Vlad Szirka - Flaticon</a>
