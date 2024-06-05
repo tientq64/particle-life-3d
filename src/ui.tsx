@@ -13,7 +13,6 @@ import {
 	message,
 	theme
 } from 'antd'
-import clsx from 'clsx'
 import { useEffect, useMemo } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Trans, useTranslation } from 'react-i18next'
