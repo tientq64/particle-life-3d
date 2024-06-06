@@ -42,7 +42,7 @@ See changelog [here](./CHANGELOG.md).
 
 ## ✍️ Credits
 
-<a href="https://www.flaticon.com/free-icons/quantum" title="quantum icons" target="_blank">Quantum icons created by Vlad Szirka - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/quantum" title="quantum icons" target="_blank">Quantum icons created by Vlad Szirka - Flaticon</a>.
 
 ## ☕ Support me
 
