@@ -17,6 +17,9 @@ importers:
       i18next-browser-languagedetector:
         specifier: 8.0.0
         version: 8.0.0
+      pizzicato:
+        specifier: 0.6.4
+        version: 0.6.4
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -33,6 +36,9 @@ importers:
         specifier: 4.5.2
         version: 4.5.2(@types/react@18.3.3)(react@18.3.1)
     devDependencies:
+      '@types/pizzicato':
+        specifier: ^0.6.4
+        version: 0.6.4
       '@types/react':
         specifier: ^18.3.3
         version: 18.3.3
@@ -406,6 +412,9 @@ packages:
   '@types/estree@1.0.5':
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
 
+  '@types/pizzicato@0.6.4':
+    resolution: {integrity: sha512-hx7oa+HEtROPv9AfFlHWdiwttNZDgx6nGt4U4e47udceoPv+p8sSuAbCBRUjwON6P1LfnyykwlNsWPqKEPi4MQ==}
+
   '@types/prop-types@15.7.12':
     resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
 
@@ -699,6 +708,9 @@ packages:
   pirates@4.0.6:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==}
     engines: {node: '>= 6'}
+
+  pizzicato@0.6.4:
+    resolution: {integrity: sha512-1Y4UGnhdBvCoeRTt4Cor/zPRsH/pEAGsBESy0zeR8mH2i2piJRQLEEctkzUJGo6h64GiepZy+LFaJ/a3riR+WA==}
 
   postcss-import@15.1.0:
     resolution: {integrity: sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew==}
@@ -1463,6 +1475,8 @@ snapshots:
 
   '@types/estree@1.0.5': {}
 
+  '@types/pizzicato@0.6.4': {}
+
   '@types/prop-types@15.7.12': {}
 
   '@types/react-dom@18.3.0':
@@ -1791,6 +1805,8 @@ snapshots:
   pify@2.3.0: {}
 
   pirates@4.0.6: {}
+
+  pizzicato@0.6.4: {}
 
   postcss-import@15.1.0(postcss@8.4.38):
     dependencies:

@@ -8,58 +8,71 @@ export type StorableStates = {
 	radius: number
 	minG: number
 	maxG: number
-	isLimitedVelocity: boolean
-	maxVelocity: number
-	velocityDecreaseFactor: number
 	pushBackForce: number
 	zoom: number
-	isSeparated: boolean
+	isCheckCollision: boolean
 	isFakedDepth: boolean
 	helperVisibility: HelperVisibility
-	isPaused: boolean
-	isSpinning: boolean
 	spinningSpeed: number
+	soundEnabled: boolean
+	soundVolume: number
+	soundMaxFrequency: number
 }
+
+export type SessionStates = {
+	isSpinning: boolean
+	isPaused: boolean
+}
+
+export type States = StorableStates & SessionStates
 
 export type Actions = {
 	setRadius(radius: number): void
 	setMinG(minG: number): void
 	setMaxG(maxG: number): void
-	setIsLimitedVelocity(isLimitedVelocity: boolean): void
-	setMaxVelocity(maxVelocity: number): void
-	setVelocityDecreaseFactor(velocityDecreaseFactor: number): void
 	setPushBackForce(pushBackForce: number): void
 	setZoom(zoom: number): void
-	setIsSeparated(isSeparated: boolean): void
+	setIsCheckCollision(isCheckCollision: boolean): void
 	setIsFakedDepth(isFakedDepth: boolean): void
 	setHelperVisibility(helperVisibility: HelperVisibility): void
 	setIsPaused(isPaused: boolean): void
 	setIsSpinning(isSpinning: boolean): void
 	setSpinningSpeed(spinningSpeed: number): void
+	setSoundEnabled(soundEnabled: boolean): void
+	setSoundVolume(soundVolume: number): void
+	setSoundMaxFrequency(soundMaxFrequency: number): void
 	restoreToDefaultStates(): void
 }
 
-export type Store = StorableStates & Actions
+export type Store = States & Actions
 
 export const storableStates: StorableStates = {
 	radius: 240,
-	minG: -0.3,
-	maxG: 0.3,
-	isLimitedVelocity: false,
-	maxVelocity: 1,
-	velocityDecreaseFactor: 0.1,
-	pushBackForce: 0.008,
+	minG: -30,
+	maxG: 30,
+	pushBackForce: 8,
 	zoom: 1,
-	isSeparated: true,
+	isCheckCollision: true,
 	isFakedDepth: true,
 	helperVisibility: 'visibleWhenDragging',
-	isPaused: false,
+	spinningSpeed: 0.002,
+	soundEnabled: true,
+	soundVolume: 0.1,
+	soundMaxFrequency: 330
+}
+
+export const sessionStates: SessionStates = {
 	isSpinning: true,
-	spinningSpeed: 0.002
+	isPaused: false
+}
+
+export const states: States = {
+	...storableStates,
+	...sessionStates
 }
 
 export const storeCreator: StateCreator<Store> = (set) => ({
-	...structuredClone(storableStates),
+	...structuredClone(states),
 
 	setRadius(radius) {
 		set({ radius })
@@ -73,18 +86,6 @@ export const storeCreator: StateCreator<Store> = (set) => ({
 		set({ maxG })
 	},
 
-	setIsLimitedVelocity(isLimitedVelocity) {
-		set({ isLimitedVelocity })
-	},
-
-	setMaxVelocity(maxVelocity) {
-		set({ maxVelocity })
-	},
-
-	setVelocityDecreaseFactor(velocityDecreaseFactor) {
-		set({ velocityDecreaseFactor })
-	},
-
 	setPushBackForce(pushBackForce) {
 		set({ pushBackForce })
 	},
@@ -93,8 +94,8 @@ export const storeCreator: StateCreator<Store> = (set) => ({
 		set({ zoom })
 	},
 
-	setIsSeparated(isSeparated) {
-		set({ isSeparated })
+	setIsCheckCollision(isCheckCollision) {
+		set({ isCheckCollision })
 	},
 
 	setIsFakedDepth(isFakedDepth) {
@@ -115,6 +116,18 @@ export const storeCreator: StateCreator<Store> = (set) => ({
 
 	setSpinningSpeed(spinningSpeed) {
 		set({ spinningSpeed })
+	},
+
+	setSoundEnabled(soundEnabled) {
+		set({ soundEnabled })
+	},
+
+	setSoundVolume(soundVolume) {
+		set({ soundVolume })
+	},
+
+	setSoundMaxFrequency(soundMaxFrequency) {
+		set({ soundMaxFrequency })
 	},
 
 	restoreToDefaultStates() {

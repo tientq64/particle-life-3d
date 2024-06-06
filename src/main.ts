@@ -1,8 +1,8 @@
 import { Ellipse, Illustration, Shape, Vector, Group as ZDogGroup } from 'zdog'
 import { Store, useStore } from './store/store'
-import './ui'
 import { switchLanguage, toggleFullscreen } from './ui'
 import { clamp, randomFloat, PI_2 } from './utils/utils'
+import { Effects, Sound } from 'pizzicato'
 
 class Particle extends Shape {
 	velocity: Vector = vector0.copy()
@@ -14,7 +14,7 @@ type Group = {
 	particles: Particle[]
 }
 
-function getDistancesTwoVectors(
+function getDistancesBetweenTwoVectors(
 	vectorA: Vector,
 	vectorB: Vector
 ): [number, number, number, number] {
@@ -25,7 +25,7 @@ function getDistancesTwoVectors(
 	return [d, dx, dy, dz]
 }
 
-function getRandomVector(radius: number): Vector {
+function getRandomVectorInSphere(radius: number): Vector {
 	const theta = 2 * Math.PI * Math.random()
 	const phi = Math.acos(2 * Math.random() - 1)
 	const r = Math.cbrt(Math.random()) * radius
@@ -46,7 +46,7 @@ function addGroup(number: number, color: string): void {
 			addTo: illo,
 			stroke: 8,
 			color: color + 'ee',
-			translate: getRandomVector(store.radius)
+			translate: getRandomVectorInSphere(store.radius)
 		})
 		particles.push(particle)
 		group.particles.push(particle)
@@ -65,7 +65,7 @@ function rule(groupA: Group, groupB: Group): void {
 		for (const particleB of groupB.particles) {
 			if (particle === particleB) continue
 
-			let [d, dx, dy, dz] = getDistancesTwoVectors(particle.translate, particleB.translate)
+			let [d, dx, dy, dz] = getDistancesBetweenTwoVectors(particle.translate, particleB.translate)
 			if (d && d >= 0 && d <= 400) {
 				let f = (g * 1) / d
 				fx += f * dx
@@ -77,26 +77,20 @@ function rule(groupA: Group, groupB: Group): void {
 		particle.velocity.y = (particle.velocity.y + fy) * 0.5
 		particle.velocity.z = (particle.velocity.z + fz) * 0.5
 
-		if (store.isLimitedVelocity) {
-			if (particle.velocity.magnitude() > store.maxVelocity) {
-				particle.velocity.multiply(store.velocityDecreaseFactor)
-			}
-		}
-
 		particle.translate.x += particle.velocity.x
 		particle.translate.y += particle.velocity.y
 		particle.translate.z += particle.velocity.z
 
 		if (particle.translate.magnitude() > store.radius) {
-			particle.translate.lerp(vector0, store.pushBackForce)
+			particle.translate.lerp(vector0, store.pushBackForce / 1000)
 		}
 	}
 }
 
-function separate(particleA: Particle, particleB: Particle): void {
-	const [d, dx, dy, dz] = getDistancesTwoVectors(particleB.translate, particleA.translate)
+function separate(particleA: Particle, particleB: Particle): boolean {
+	const [d, dx, dy, dz] = getDistancesBetweenTwoVectors(particleB.translate, particleA.translate)
 	const overlap: number = particleA.radius + particleB.radius - d
-	if (overlap <= 0) return
+	if (overlap <= 0) return false
 	const direction: Vector = new Vector({
 		x: (dx * overlap) / 4,
 		y: (dy * overlap) / 4,
@@ -104,27 +98,41 @@ function separate(particleA: Particle, particleB: Particle): void {
 	})
 	particleA.translate.subtract(direction)
 	particleB.translate.add(direction)
+	return true
 }
 
 function update(): void {
+	sound.frequency = 0
 	if (!store.isPaused) {
 		for (const groupA of groups) {
 			for (const groupB of groups) {
 				rule(groupA, groupB)
 			}
 		}
-		if (store.isSeparated) {
+		if (store.isCheckCollision) {
+			let count = 0
+			let pan = 0
 			for (let i = 0; i < particles.length - 1; i++) {
+				const particleA = particles[i]
 				for (let j = i + 1; j < particles.length; j++) {
-					separate(particles[i], particles[j])
+					const particleB = particles[j]
+					const separated = separate(particleA, particleB)
+					if (separated) {
+						let translateA: Vector = particleA.translate.copy().rotate(illo.rotate)
+						let translateB: Vector = particleB.translate.copy().rotate(illo.rotate)
+						pan += (translateA.x + translateB.x) / store.radius / 2
+						count++
+					}
 				}
 			}
+			stereoPanner.pan = clamp(pan / count, -1, 1)
+			sound.frequency = (count / (particles.length * 2)) * store.soundMaxFrequency
 		}
 	}
 	for (const particle of particles) {
-		let rotate = particle.translate.copy().rotate(illo.rotate)
+		let translate: Vector = particle.translate.copy().rotate(illo.rotate)
 		particle.stroke = store.isFakedDepth
-			? clamp(((rotate.z + store.radius) / store.radius) * 4 + 4, 4, 12)
+			? clamp(((translate.z + store.radius) / store.radius) * 4 + 4, 4, 12)
 			: 8
 	}
 	if (store.isSpinning) {
@@ -138,7 +146,7 @@ export function randomGMaps(): void {
 	for (const colorA of colors) {
 		gMaps[colorA] = {}
 		for (const colorB of colors) {
-			gMaps[colorA][colorB] = randomFloat(store.minG, store.maxG)
+			gMaps[colorA][colorB] = randomFloat(store.minG / 100, store.maxG / 100)
 		}
 	}
 	for (const particle of particles) {
@@ -149,14 +157,20 @@ export function randomGMaps(): void {
 function updateStore(): void {
 	illo.zoom = store.zoom
 	helper.visible = store.helperVisibility === 'visible'
+	sound.volume = store.soundEnabled ? store.soundVolume : 0
 }
 
-function resize(): void {
+function handleGlobalResize(): void {
 	illo.setSize(innerWidth, innerHeight)
 }
 
-function keydown(event: KeyboardEvent): void {
+function handleGlobalPointerDown(): void {
+	sound.play()
+}
+
+function handleGlobalKeyDown(event: KeyboardEvent): void {
 	if (event.repeat) return
+	sound.play()
 	if (event.ctrlKey || event.shiftKey || event.altKey || event.metaKey) return
 	if (document.activeElement !== document.body) return
 
@@ -165,12 +179,8 @@ function keydown(event: KeyboardEvent): void {
 			randomGMaps()
 			break
 
-		case 'KeyE':
-			store.setIsSeparated(!store.isSeparated)
-			break
-
-		case 'KeyG':
-			store.setIsLimitedVelocity(!store.isLimitedVelocity)
+		case 'KeyC':
+			store.setIsCheckCollision(!store.isCheckCollision)
 			break
 
 		case 'KeyQ':
@@ -200,10 +210,18 @@ function keydown(event: KeyboardEvent): void {
 	}
 }
 
-function wheel(event: WheelEvent): void {
+function handleGlobalWheel(event: WheelEvent): void {
 	if (event.target !== illo.element) return
 
 	store.setZoom(illo.zoom * (event.deltaY > 0 ? 0.95 : 1.05))
+}
+
+function handleGlobalVisibilityChange(): void {
+	if (document.hidden) {
+		sound.pause()
+	} else {
+		sound.play()
+	}
 }
 
 function handleCanvasPointerDown(event: MouseEvent): void {
@@ -242,7 +260,7 @@ export const illo = new Illustration({
 	dragRotate: true,
 	rotate: {
 		x: -Math.PI / 8,
-		y: -Math.PI / 8
+		y: Math.PI / 4
 	},
 	onDragStart: () => {
 		illo.element.classList.add('cursor-move')
@@ -262,6 +280,19 @@ export const illo = new Illustration({
 })
 illo.element = illo.element as HTMLCanvasElement
 illo.element.addEventListener('pointerdown', handleCanvasPointerDown)
+
+const sound = new Sound({
+	source: 'wave',
+	options: {
+		type: 'sine',
+		attack: 0,
+		release: 0,
+		volume: 0.05
+	}
+})
+
+const stereoPanner = new Effects.StereoPanner()
+sound.addEffect(stereoPanner)
 
 randomGMaps()
 for (const colorA of colors) {
@@ -303,10 +334,12 @@ useStore.subscribe((state) => {
 	updateStore()
 })
 
-window.addEventListener('resize', resize)
-window.addEventListener('keydown', keydown)
-window.addEventListener('wheel', wheel)
+window.addEventListener('resize', handleGlobalResize)
+window.addEventListener('pointerdown', handleGlobalPointerDown)
+window.addEventListener('keydown', handleGlobalKeyDown)
+window.addEventListener('wheel', handleGlobalWheel)
+window.addEventListener('visibilitychange', handleGlobalVisibilityChange)
 
 updateStore()
-resize()
+handleGlobalResize()
 update()

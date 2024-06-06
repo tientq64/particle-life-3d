@@ -68,14 +68,9 @@ function App() {
 				click: randomGMaps
 			},
 			{
-				kbd: 'E',
-				description: t('Phân tách các hạt'),
-				click: () => store.setIsSeparated(!store.isSeparated)
-			},
-			{
-				kbd: 'G',
-				description: t('Bật / tắt giới hạn vận tốc hạt'),
-				click: () => store.setIsLimitedVelocity(!store.isLimitedVelocity)
+				kbd: 'C',
+				description: t('Kiểm tra va chạm các hạt'),
+				click: () => store.setIsCheckCollision(!store.isCheckCollision)
 			},
 			{
 				kbd: 'Q',
@@ -141,14 +136,6 @@ function App() {
 	}, [store.maxG])
 
 	useEffect(() => {
-		form.setFieldValue('maxVelocity', store.maxVelocity)
-	}, [store.maxVelocity])
-
-	useEffect(() => {
-		form.setFieldValue('velocityDecreaseFactor', store.velocityDecreaseFactor)
-	}, [store.velocityDecreaseFactor])
-
-	useEffect(() => {
 		form.setFieldValue('pushBackForce', store.pushBackForce)
 	}, [store.pushBackForce])
 
@@ -170,7 +157,7 @@ function App() {
 	return (
 		<ConfigProvider theme={darkTheme}>
 			<div className="absolute inset-0 flex justify-between items-start pointer-events-none">
-				<div className="2xl:w-[400px] xl:w-[360px] w-[340px] max-h-full p-4 pr-0 overflow-x-hidden pointer-events-auto">
+				<div className="2xl:w-[400px] xl:w-[360px] w-[340px] max-h-full p-4 pr-2 overflow-x-hidden pointer-events-auto">
 					<Form
 						form={form}
 						labelCol={{ span: 14 }}
@@ -192,39 +179,13 @@ function App() {
 						<Form.Item label={t('Phạm vi lực khi tạo ngẫu nhiên')}>
 							<Space.Compact className="flex">
 								<Form.Item name="minG" noStyle rules={[{ required: true }]}>
-									<InputNumber min={-10000} max={10000} step={0.1} />
+									<InputNumber min={-10000} max={10000} />
 								</Form.Item>
 
 								<Form.Item name="maxG" noStyle rules={[{ required: true }]}>
-									<InputNumber min={-10000} max={10000} step={0.1} />
+									<InputNumber min={-10000} max={10000} />
 								</Form.Item>
 							</Space.Compact>
-						</Form.Item>
-
-						<Form.Item label={t('Giới hạn vận tốc hạt')}>
-							<Switch value={store.isLimitedVelocity} onChange={store.setIsLimitedVelocity} />
-						</Form.Item>
-
-						<Form.Item
-							label={t('Vận tốc hạt tối đa')}
-							name="maxVelocity"
-							rules={[{ required: true }]}
-						>
-							<InputNumber min={0.1} max={10000} step={0.1} disabled={!store.isLimitedVelocity} />
-						</Form.Item>
-
-						<Form.Item
-							label={t('Giảm tốc độ xuống khi đạt tối đa')}
-							name="velocityDecreaseFactor"
-							rules={[{ required: true }]}
-						>
-							<Slider
-								min={0}
-								max={1}
-								step={0.01}
-								disabled={!store.isLimitedVelocity}
-								tooltip={{ formatter: (value) => `${Math.round((value || 0) * 100)}%` }}
-							/>
 						</Form.Item>
 
 						<Form.Item
@@ -232,15 +193,15 @@ function App() {
 							name="pushBackForce"
 							rules={[{ required: true }]}
 						>
-							<InputNumber min={-0.004} max={1} step={0.001} />
+							<InputNumber min={-4} max={1000} />
 						</Form.Item>
 
 						<Form.Item label={t('Thu phóng')}>
 							<Slider min={0.1} max={4} step={0.1} value={store.zoom} onChange={store.setZoom} />
 						</Form.Item>
 
-						<Form.Item label={t('Phân tách các hạt')}>
-							<Switch value={store.isSeparated} onChange={store.setIsSeparated} />
+						<Form.Item label={t('Kiểm tra va chạm các hạt')}>
+							<Switch value={store.isCheckCollision} onChange={store.setIsCheckCollision} />
 						</Form.Item>
 
 						<Form.Item label={t('Giả chiều sâu')}>
@@ -276,6 +237,34 @@ function App() {
 							<InputNumber min={0.001} max={1} step={0.001} disabled={!store.isSpinning} />
 						</Form.Item>
 
+						<Form.Item label={t('Bật âm thanh')}>
+							<Switch value={store.soundEnabled} onChange={store.setSoundEnabled} />
+						</Form.Item>
+
+						<Form.Item label={t('Âm lượng')}>
+							<Slider
+								min={0}
+								max={1}
+								step={0.01}
+								disabled={!store.soundEnabled}
+								tooltip={{ formatter: (value) => `${Math.round((value || 0) * 100)}%` }}
+								value={store.soundVolume}
+								onChange={store.setSoundVolume}
+							/>
+						</Form.Item>
+
+						<Form.Item label={t('Cao độ âm thanh')}>
+							<Slider
+								min={110}
+								max={880}
+								step={10}
+								disabled={!store.soundEnabled}
+								tooltip={{ formatter: (value) => `${value} Hz` }}
+								value={store.soundMaxFrequency}
+								onChange={store.setSoundMaxFrequency}
+							/>
+						</Form.Item>
+
 						<Form.Item label="Language / Ngôn ngữ">
 							<Select
 								popupMatchSelectWidth={false}
@@ -296,7 +285,7 @@ function App() {
 					</Form>
 				</div>
 
-				<div className="2xl:w-[400px] xl:w-[360px] w-[340px] max-h-full p-4 pl-0 2xl:pr-6 xl:pr-4 overflow-x-hidden pointer-events-auto">
+				<div className="2xl:w-[400px] xl:w-[360px] w-[340px] max-h-full p-4 pl-2 2xl:pr-6 xl:pr-4 overflow-x-hidden pointer-events-auto">
 					<List
 						size="small"
 						dataSource={keyboardShortcuts}
