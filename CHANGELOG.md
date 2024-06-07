@@ -1,5 +1,11 @@
 # Changelog
 
+# [1.2.1]() (2024-06-08)
+
+### 📦 Build
+
+- Edit `manualChunks` vite configuration, to fix production build of broken code.
+
 # [1.2.0]() (2024-06-07)
 
 ### ✨ Features
