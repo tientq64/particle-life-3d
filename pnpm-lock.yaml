@@ -11,12 +11,18 @@ importers:
       antd:
         specifier: 5.17.4
         version: 5.17.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      dayjs:
+        specifier: 1.11.11
+        version: 1.11.11
       i18next:
         specifier: 23.11.5
         version: 23.11.5
       i18next-browser-languagedetector:
         specifier: 8.0.0
         version: 8.0.0
+      nanoid:
+        specifier: 5.0.7
+        version: 5.0.7
       pizzicato:
         specifier: 0.6.4
         version: 0.6.4
@@ -669,6 +675,11 @@ packages:
   nanoid@3.3.7:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
+  nanoid@5.0.7:
+    resolution: {integrity: sha512-oLxFY2gd2IqnjcYyOXD8XGCftpGtZP2AbHbOkthDkvRywH5ayNtPVy9YlOPcHckXzbLTCHpkb7FB+yuxKV13pQ==}
+    engines: {node: ^18 || >=20}
     hasBin: true
 
   normalize-path@3.0.0:
@@ -1782,6 +1793,8 @@ snapshots:
       thenify-all: 1.6.0
 
   nanoid@3.3.7: {}
+
+  nanoid@5.0.7: {}
 
   normalize-path@3.0.0: {}
 

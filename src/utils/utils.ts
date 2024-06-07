@@ -12,6 +12,10 @@ export function randomFloat(min: number, max: number): number {
 	return min + Math.random() * (max - min)
 }
 
+export function randomInt(min: number, max: number): number {
+	return min + Math.floor(Math.random() * (max - min + 1))
+}
+
 export function pickObject(obj: KeyValuePair, pickedKeys: string[]): KeyValuePair {
 	const newObj: KeyValuePair = {}
 	for (const key of pickedKeys) {

@@ -1,7 +1,7 @@
 {
 	"name": "particle-life-3d",
 	"private": true,
-	"version": "1.1.1",
+	"version": "1.2.0",
 	"type": "module",
 	"description": "🦠 Life is made up of elementary particles.",
 	"keywords": [
@@ -13,10 +13,23 @@
 		"3d",
 		"game-of-life"
 	],
+	"homepage": "https://particle-life-3d.vercel.app",
+	"bugs": {
+		"url": "https://github.com/tientq64/particle-life-3d/issues",
+		"email": "tientq64@gmail.com"
+	},
 	"author": {
 		"name": "tientq64",
 		"email": "tientq64@gmail.com",
 		"url": "https://github.com/tientq64"
+	},
+	"funding": [
+		"https://ko-fi.com/tientq64",
+		"https://buymeacoffee.com/tientq64"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tientq64/particle-life-3d.git"
 	},
 	"scripts": {
 		"dev": "vite",
@@ -25,8 +38,10 @@
 	},
 	"dependencies": {
 		"antd": "5.17.4",
+		"dayjs": "1.11.11",
 		"i18next": "23.11.5",
 		"i18next-browser-languagedetector": "8.0.0",
+		"nanoid": "5.0.7",
 		"pizzicato": "0.6.4",
 		"react": "18.3.1",
 		"react-dom": "18.3.1",

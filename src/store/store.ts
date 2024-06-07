@@ -1,5 +1,8 @@
+import { nanoid } from 'nanoid'
+import { Vector } from 'zdog'
 import { StateCreator, create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { GMaps, Group } from '../main'
 import { pickObject } from '../utils/utils'
 
 export type HelperVisibility = 'hidden' | 'visible' | 'visibleWhenDragging'
@@ -16,12 +19,14 @@ export type StorableStates = {
 	spinningSpeed: number
 	soundEnabled: boolean
 	soundVolume: number
+	soundSmoothed: boolean
 	soundMaxFrequency: number
 }
 
 export type SessionStates = {
 	isSpinning: boolean
 	isPaused: boolean
+	snapshots: Snapshot[]
 }
 
 export type States = StorableStates & SessionStates
@@ -35,16 +40,40 @@ export type Actions = {
 	setIsCheckCollision(isCheckCollision: boolean): void
 	setIsFakedDepth(isFakedDepth: boolean): void
 	setHelperVisibility(helperVisibility: HelperVisibility): void
-	setIsPaused(isPaused: boolean): void
-	setIsSpinning(isSpinning: boolean): void
 	setSpinningSpeed(spinningSpeed: number): void
 	setSoundEnabled(soundEnabled: boolean): void
 	setSoundVolume(soundVolume: number): void
+	setSoundSmoothed(soundSmoothed: boolean): void
 	setSoundMaxFrequency(soundMaxFrequency: number): void
-	restoreToDefaultStates(): void
+	setIsSpinning(isSpinning: boolean): void
+	setIsPaused(isPaused: boolean): void
+	makeSnapshot(store: Store, gMaps: GMaps, groups: Group[]): Snapshot
+	pushSnapshot(snapshot: Snapshot): void
+	resetToDefaultStates(): void
 }
 
 export type Store = States & Actions
+
+export type Snapshot = {
+	id: string
+	createdTime: string
+	radius: number
+	pushBackForce: number
+	isCheckCollision: boolean
+	gMaps: GMaps
+	groups: GroupSnapshot[]
+}
+
+export type GroupSnapshot = {
+	color: string
+	particles: ParticleSnapshot[]
+}
+
+export type ParticleSnapshot = {
+	radius: number
+	translate: Vector
+	velocity?: Vector
+}
 
 export const storableStates: StorableStates = {
 	radius: 240,
@@ -57,13 +86,15 @@ export const storableStates: StorableStates = {
 	helperVisibility: 'visibleWhenDragging',
 	spinningSpeed: 0.002,
 	soundEnabled: true,
-	soundVolume: 0.1,
-	soundMaxFrequency: 330
+	soundVolume: 0.2,
+	soundSmoothed: false,
+	soundMaxFrequency: 660
 }
 
 export const sessionStates: SessionStates = {
 	isSpinning: true,
-	isPaused: false
+	isPaused: false,
+	snapshots: []
 }
 
 export const states: States = {
@@ -106,14 +137,6 @@ export const storeCreator: StateCreator<Store> = (set) => ({
 		set({ helperVisibility })
 	},
 
-	setIsPaused(isPaused) {
-		set({ isPaused })
-	},
-
-	setIsSpinning(isSpinning) {
-		set({ isSpinning })
-	},
-
 	setSpinningSpeed(spinningSpeed) {
 		set({ spinningSpeed })
 	},
@@ -126,11 +149,51 @@ export const storeCreator: StateCreator<Store> = (set) => ({
 		set({ soundVolume })
 	},
 
+	setSoundSmoothed(soundSmoothed) {
+		set({ soundSmoothed })
+	},
+
 	setSoundMaxFrequency(soundMaxFrequency) {
 		set({ soundMaxFrequency })
 	},
 
-	restoreToDefaultStates() {
+	setIsSpinning(isSpinning) {
+		set({ isSpinning })
+	},
+
+	setIsPaused(isPaused) {
+		set({ isPaused })
+	},
+
+	makeSnapshot(store, gMaps, groups) {
+		const snapshot: Snapshot = {
+			id: nanoid(),
+			createdTime: new Date().toJSON(),
+			radius: store.radius,
+			isCheckCollision: store.isCheckCollision,
+			pushBackForce: store.pushBackForce,
+			gMaps: structuredClone(gMaps),
+			groups: groups.map((group) => ({
+				color: group.color,
+				particles: group.particles.map<ParticleSnapshot>((particle) => ({
+					radius: particle.radius,
+					translate: particle.translate.copy(),
+					velocity: particle.velocity.isZero() ? undefined : particle.velocity.copy()
+				}))
+			}))
+		}
+		return snapshot
+	},
+
+	pushSnapshot(snapshot) {
+		set((state) => {
+			const snapshots: Snapshot[] = [...state.snapshots, snapshot]
+			if (snapshots.length > 10) snapshots.shift()
+			return { snapshots }
+		})
+	},
+
+	resetToDefaultStates() {
 		set({ ...storableStates })
 	}
 })

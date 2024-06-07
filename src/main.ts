@@ -1,18 +1,21 @@
-import { Ellipse, Illustration, Shape, Vector, Group as ZDogGroup } from 'zdog'
-import { Store, useStore } from './store/store'
-import { switchLanguage, toggleFullscreen } from './ui'
-import { clamp, randomFloat, PI_2 } from './utils/utils'
 import { Effects, Sound } from 'pizzicato'
+import { Anchor, Ellipse, Illustration, Shape, Group as ZDogGroup } from 'zdog'
+import { Snapshot, Store, useStore } from './store/store'
+import { switchLanguage, toggleFullscreen } from './ui'
+import { PI_2, clamp, randomInt } from './utils/utils'
+import { Vector } from './zdog'
 
-class Particle extends Shape {
+export class Particle extends Shape {
 	velocity: Vector = vector0.copy()
 	radius: number = Number(this.stroke) / 2
 }
 
-type Group = {
+export type Group = {
 	color: string
 	particles: Particle[]
 }
+
+export type GMaps = Record<string, Record<string, number>>
 
 function getDistancesBetweenTwoVectors(
 	vectorA: Vector,
@@ -33,7 +36,7 @@ function getRandomVectorInSphere(radius: number): Vector {
 		x: r * Math.sin(phi) * Math.cos(theta),
 		y: r * Math.sin(phi) * Math.sin(theta),
 		z: r * Math.cos(phi)
-	})
+	}).round()
 }
 
 function addGroup(number: number, color: string): void {
@@ -43,7 +46,7 @@ function addGroup(number: number, color: string): void {
 	}
 	for (let i = 0; i < number; i++) {
 		const particle: Particle = new Particle({
-			addTo: illo,
+			addTo: particlesAnchor,
 			stroke: 8,
 			color: color + 'ee',
 			translate: getRandomVectorInSphere(store.radius)
@@ -55,7 +58,7 @@ function addGroup(number: number, color: string): void {
 }
 
 function rule(groupA: Group, groupB: Group): void {
-	let g = gMaps[groupA.color][groupB.color]
+	let g = gMaps[groupA.color][groupB.color] / 100
 
 	for (const particle of groupA.particles) {
 		let fx = 0
@@ -87,22 +90,26 @@ function rule(groupA: Group, groupB: Group): void {
 	}
 }
 
-function separate(particleA: Particle, particleB: Particle): boolean {
+function collide(particleA: Particle, particleB: Particle): boolean {
 	const [d, dx, dy, dz] = getDistancesBetweenTwoVectors(particleB.translate, particleA.translate)
 	const overlap: number = particleA.radius + particleB.radius - d
 	if (overlap <= 0) return false
-	const direction: Vector = new Vector({
-		x: (dx * overlap) / 4,
-		y: (dy * overlap) / 4,
-		z: (dz * overlap) / 4
-	})
-	particleA.translate.subtract(direction)
-	particleB.translate.add(direction)
+	let x = (dx * overlap) / 4
+	let y = (dy * overlap) / 4
+	let z = (dz * overlap) / 4
+	particleA.translate.x -= x
+	particleA.translate.y -= y
+	particleA.translate.z -= z
+	particleB.translate.x += x
+	particleB.translate.y += y
+	particleB.translate.z += z
 	return true
 }
 
 function update(): void {
-	sound.frequency = 0
+	if (!store.soundSmoothed) {
+		sound.frequency = 0
+	}
 	if (!store.isPaused) {
 		for (const groupA of groups) {
 			for (const groupB of groups) {
@@ -112,21 +119,26 @@ function update(): void {
 		if (store.isCheckCollision) {
 			let count = 0
 			let pan = 0
+			let volume = 0
 			for (let i = 0; i < particles.length - 1; i++) {
 				const particleA = particles[i]
 				for (let j = i + 1; j < particles.length; j++) {
 					const particleB = particles[j]
-					const separated = separate(particleA, particleB)
-					if (separated) {
+					const isCollided = collide(particleA, particleB)
+					if (isCollided) {
 						let translateA: Vector = particleA.translate.copy().rotate(illo.rotate)
 						let translateB: Vector = particleB.translate.copy().rotate(illo.rotate)
 						pan += (translateA.x + translateB.x) / store.radius / 2
+						volume += (translateA.z + translateB.z) / store.radius / 2
 						count++
 					}
 				}
 			}
 			stereoPanner.pan = clamp(pan / count, -1, 1)
 			sound.frequency = (count / (particles.length * 2)) * store.soundMaxFrequency
+			if (store.soundEnabled) {
+				sound.volume = clamp((volume / count + 1) / 2, 0, 1) * store.soundVolume
+			}
 		}
 	}
 	for (const particle of particles) {
@@ -146,18 +158,65 @@ export function randomGMaps(): void {
 	for (const colorA of colors) {
 		gMaps[colorA] = {}
 		for (const colorB of colors) {
-			gMaps[colorA][colorB] = randomFloat(store.minG / 100, store.maxG / 100)
+			gMaps[colorA][colorB] = randomInt(store.minG, store.maxG)
 		}
 	}
 	for (const particle of particles) {
-		particle.velocity.set(vector0)
+		particle.translate.round()
+		particle.velocity.scale(0)
 	}
+	captureSnapshot()
 }
 
 function updateStore(): void {
 	illo.zoom = store.zoom
 	helper.visible = store.helperVisibility === 'visible'
 	sound.volume = store.soundEnabled ? store.soundVolume : 0
+}
+
+export function captureSnapshot(): void {
+	if (store.isPaused) return
+	const snapshot: Snapshot = store.makeSnapshot(store, gMaps, groups)
+	store.pushSnapshot(snapshot)
+}
+
+export function applySnapshot(snapshot: Snapshot): void {
+	store.setRadius(snapshot.radius)
+	store.setPushBackForce(snapshot.pushBackForce)
+	store.setIsCheckCollision(snapshot.isCheckCollision)
+	setTimeout(() => {
+		for (const colorA of colors) {
+			for (const colorB of colors) {
+				gMaps[colorA][colorB] = snapshot.gMaps[colorA][colorB]
+			}
+		}
+		for (const particle of particles) {
+			particle.remove()
+		}
+		particles.splice(0)
+		groups.splice(0)
+		for (const groupSnapshot of snapshot.groups) {
+			const group: Group = {
+				color: groupSnapshot.color,
+				particles: []
+			}
+			for (const particleSnapshot of groupSnapshot.particles) {
+				const particle: Particle = new Particle({
+					addTo: particlesAnchor,
+					stroke: particleSnapshot.radius * 2,
+					color: group.color + 'ee',
+					translate: { ...particleSnapshot.translate }
+				})
+				if (particleSnapshot.velocity) {
+					particle.velocity.add2(particleSnapshot.velocity)
+				}
+				particles.push(particle)
+				group.particles.push(particle)
+			}
+			groups.push(group)
+		}
+		particlesAnchor.updateGraph()
+	})
 }
 
 function handleGlobalResize(): void {
@@ -200,12 +259,16 @@ function handleGlobalKeyDown(event: KeyboardEvent): void {
 			store.setHelperVisibility(store.helperVisibility === 'visible' ? 'hidden' : 'visible')
 			break
 
+		case 'KeyM':
+			store.setSoundEnabled(!store.soundEnabled)
+			break
+
 		case 'KeyL':
 			switchLanguage()
 			break
 
 		case 'Backquote':
-			store.restoreToDefaultStates()
+			store.resetToDefaultStates()
 			break
 	}
 }
@@ -238,7 +301,7 @@ function handleCanvasPointerDown(event: MouseEvent): void {
 }
 
 let store: Store = useStore.getState()
-const vector0: Vector = new Vector({ x: 0, y: 0, z: 0 })
+export const vector0: Vector = new Vector({ x: 0, y: 0, z: 0 })
 const particles: Particle[] = []
 const groups: Group[] = []
 const colors: string[] = [
@@ -253,7 +316,7 @@ const colors: string[] = [
 	'#ffffff',
 	'#94a3b8'
 ]
-const gMaps: Record<string, Record<string, number>> = {}
+const gMaps: GMaps = {}
 
 export const illo = new Illustration({
 	element: '#canvas',
@@ -281,23 +344,9 @@ export const illo = new Illustration({
 illo.element = illo.element as HTMLCanvasElement
 illo.element.addEventListener('pointerdown', handleCanvasPointerDown)
 
-const sound = new Sound({
-	source: 'wave',
-	options: {
-		type: 'sine',
-		attack: 0,
-		release: 0,
-		volume: 0.05
-	}
+const particlesAnchor = new Anchor({
+	addTo: illo
 })
-
-const stereoPanner = new Effects.StereoPanner()
-sound.addEffect(stereoPanner)
-
-randomGMaps()
-for (const colorA of colors) {
-	addGroup(75, colorA)
-}
 
 export const helper = new ZDogGroup({
 	addTo: illo
@@ -329,6 +378,23 @@ new Ellipse({
 	backface: '#02061733'
 })
 
+const sound = new Sound({
+	source: 'wave',
+	options: {
+		type: 'sine',
+		attack: 0,
+		release: 0,
+		volume: 0.05
+	}
+})
+
+const stereoPanner = new Effects.StereoPanner()
+sound.addEffect(stereoPanner)
+
+for (const colorA of colors) {
+	addGroup(75, colorA)
+}
+
 useStore.subscribe((state) => {
 	store = state
 	updateStore()
@@ -342,4 +408,5 @@ window.addEventListener('visibilitychange', handleGlobalVisibilityChange)
 
 updateStore()
 handleGlobalResize()
+randomGMaps()
 update()

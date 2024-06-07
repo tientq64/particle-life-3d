@@ -20,8 +20,7 @@
 			"command":"npm run build",
 			"group": "build",
 			"presentation": {
-				"reveal": "silent",
-				"close": true
+				"reveal": "always"
 			}
 		}
 	]

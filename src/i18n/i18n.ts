@@ -5,6 +5,11 @@ import localesVi from './locales/vi.json'
 import localesEn from './locales/en.json'
 import localesZh from './locales/zh.json'
 import localesJa from './locales/ja.json'
+import dayjsViLocale from 'dayjs/locale/vi'
+import dayjsEnLocale from 'dayjs/locale/en'
+import dayjsZhLocale from 'dayjs/locale/zh'
+import dayjsJaLocale from 'dayjs/locale/ja'
+import dayjs from 'dayjs'
 
 i18n
 	.use(initReactI18next)
@@ -29,5 +34,25 @@ i18n
 			}
 		}
 	})
+
+function handleLanguageChanged(lng: string): void {
+	switch (lng) {
+		case 'vi':
+			dayjs.locale(dayjsViLocale)
+			break
+		case 'en':
+			dayjs.locale(dayjsEnLocale)
+			break
+		case 'zh':
+			dayjs.locale(dayjsZhLocale)
+			break
+		case 'ja':
+			dayjs.locale(dayjsJaLocale)
+			break
+	}
+}
+
+i18n.on('languageChanged', handleLanguageChanged)
+handleLanguageChanged(i18n.language)
 
 export { i18n }
