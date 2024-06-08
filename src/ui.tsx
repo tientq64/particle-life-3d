@@ -309,7 +309,7 @@ function App() {
 									href="https://github.com/tientq64/particle-life-3d"
 									target="_blank"
 								>
-									Github
+									GitHub
 								</a>
 							</Tooltip>
 							<Divider type="vertical" />
