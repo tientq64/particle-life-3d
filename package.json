@@ -1,7 +1,7 @@
 {
 	"name": "particle-life-3d",
 	"private": true,
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"type": "module",
 	"description": "🦠 Life is made up of elementary particles.",
 	"keywords": [
