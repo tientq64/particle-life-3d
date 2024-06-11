@@ -5,4 +5,8 @@
 	.scrollbar-thin {
 		scrollbar-width: thin;
 	}
+
+	.color-scheme-dark {
+		color-scheme: dark;
+	}
 }

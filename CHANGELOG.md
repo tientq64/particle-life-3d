@@ -1,5 +1,11 @@
 # Changelog
 
+# [1.3.1]() (2024-06-12)
+
+### 📦 Build
+
+- Create only a single `index.html` file in `dist` folder.
+
 # [1.3.0]() (2024-06-11)
 
 ### ✨ Features

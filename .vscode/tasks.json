@@ -11,6 +11,7 @@
 			},
 			"presentation": {
 				"reveal": "silent",
+				"clear": true,
 				"close": true
 			}
 		},
@@ -20,7 +21,8 @@
 			"command":"npm run build",
 			"group": "build",
 			"presentation": {
-				"reveal": "always"
+				"reveal": "always",
+				"clear": true
 			}
 		}
 	]
