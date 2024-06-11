@@ -11,6 +11,7 @@ export type StorableStates = {
 	radius: number
 	minG: number
 	maxG: number
+	maxInteractionDistance: number
 	pushBackForce: number
 	zoom: number
 	isCheckCollision: boolean
@@ -35,6 +36,7 @@ export type Actions = {
 	setRadius(radius: number): void
 	setMinG(minG: number): void
 	setMaxG(maxG: number): void
+	setMaxInteractionDistance(maxInteractionDistance: number): void
 	setPushBackForce(pushBackForce: number): void
 	setZoom(zoom: number): void
 	setIsCheckCollision(isCheckCollision: boolean): void
@@ -58,6 +60,9 @@ export type Snapshot = {
 	id: string
 	createdTime: string
 	radius: number
+	minG: number
+	maxG: number
+	maxInteractionDistance: number
 	pushBackForce: number
 	isCheckCollision: boolean
 	gMaps: GMaps
@@ -79,6 +84,7 @@ export const storableStates: StorableStates = {
 	radius: 240,
 	minG: -30,
 	maxG: 30,
+	maxInteractionDistance: 400,
 	pushBackForce: 8,
 	zoom: 1,
 	isCheckCollision: true,
@@ -115,6 +121,10 @@ export const storeCreator: StateCreator<Store> = (set) => ({
 
 	setMaxG(maxG) {
 		set({ maxG })
+	},
+
+	setMaxInteractionDistance(maxInteractionDistance) {
+		set({ maxInteractionDistance })
 	},
 
 	setPushBackForce(pushBackForce) {
@@ -170,6 +180,9 @@ export const storeCreator: StateCreator<Store> = (set) => ({
 			id: nanoid(),
 			createdTime: new Date().toJSON(),
 			radius: store.radius,
+			minG: store.minG,
+			maxG: store.maxG,
+			maxInteractionDistance: store.maxInteractionDistance,
 			isCheckCollision: store.isCheckCollision,
 			pushBackForce: store.pushBackForce,
 			gMaps: structuredClone(gMaps),

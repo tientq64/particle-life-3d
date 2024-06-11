@@ -16,7 +16,7 @@
 	Life is made up of elementary particles.
 </p>
 
-## 📰 Introduce
+## 📰 Introduction
 
 Particle Life 3D is a project that simulates particles moving and interacting in 3D space, using [Zdog](https://github.com/metafizzy/zdog) as the 3D engine. This project creates a virtual environment where particles can collide, reflect, and interact with each other based on basic physical rules.
 
@@ -24,17 +24,17 @@ Particle Life 3D is a project that simulates particles moving and interacting in
 
 ## ✨ Features
 
-* ⚛️ 3D Particle Simulation: Particles are created and move in 3D space.
+- ⚛️ 3D Particle Simulation: Particles are created and move in 3D space.
 
-* 💥 Physical Interactions: Particles interact with each other and the environment based on physical rules, including collisions and reflections.
+- 💥 Physical Interactions: Particles interact with each other and the environment based on physical rules, including collisions and reflections.
 
-* 🐶 Using Zdog: Utilizes Zdog, a powerful and lightweight JavaScript library, to render the particles and their interactions in 3D space.
+- 🐶 Using Zdog: A powerful and lightweight JavaScript library, to render the particles and their interactions in 3D space.
 
-* 🎚️ Intuitive Interface: Provides an intuitive interface to observe the movements and interactions of the particles.
+- 🎚️ Intuitive Interface: Provides an intuitive interface to observe the movements and interactions of the particles.
 
 ## 🛠️ Usage
 
-See demo [here](https://particle-life-3d.vercel.app).
+See this [website](https://particle-life-3d.vercel.app).
 
 ## 📑 Changelog
 

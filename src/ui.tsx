@@ -15,19 +15,23 @@ import {
 	message,
 	theme
 } from 'antd'
-import { useEffect, useMemo } from 'react'
-import { createRoot } from 'react-dom/client'
-import { Trans, useTranslation } from 'react-i18next'
-import { i18n } from './i18n/i18n'
-import { applySnapshot, randomGMaps } from './main'
-import { Store, useStore } from './store/store'
-import './style.css'
 import dayjs from 'dayjs'
 import dayjsRelativeTimePlugin from 'dayjs/plugin/relativeTime'
+import { saveAs } from 'file-saver'
+import { compressToUTF16, decompressFromUTF16 } from 'lz-string'
+import 'material-icons/iconfont/round.css'
+import { MouseEvent, useEffect, useMemo } from 'react'
+import { createRoot } from 'react-dom/client'
+import { Trans, useTranslation } from 'react-i18next'
+import { Icon } from './components/Icon'
+import { i18n } from './i18n/i18n'
+import { applySnapshot, randomGMaps } from './main'
+import { Snapshot, Store, useStore } from './store/store'
+import './style.css'
 
 dayjs.extend(dayjsRelativeTimePlugin)
 
-const darkTheme: ThemeConfig = {
+const antdTheme: ThemeConfig = {
 	algorithm: theme.darkAlgorithm,
 	components: {
 		Form: {
@@ -48,6 +52,43 @@ export function switchLanguage(): void {
 	i18n.changeLanguage(i18n.language === 'vi' ? 'en' : 'vi')
 }
 
+export function stringifySnapshot(snapshot: Snapshot): string {
+	const json: string = JSON.stringify(snapshot)
+	const lzstr: string = compressToUTF16(json)
+	return lzstr
+}
+
+export function parseSnapshot(lzstr: string): Snapshot {
+	try {
+		const json: string | null = decompressFromUTF16(lzstr)
+		if (json === null) throw null
+		const snapshot: Snapshot = JSON.parse(json)
+		return snapshot
+	} catch {
+		throw Error(i18n.t('Dữ liệu bản ghi không hợp lệ'))
+	}
+}
+
+export function copySnapshotToClipboard(snapshot: Snapshot): Promise<void> {
+	const lzstr: string = stringifySnapshot(snapshot)
+	return navigator.clipboard.writeText(lzstr)
+}
+
+export function downloadSnapshot(snapshot: Snapshot): void {
+	const lzstr: string = stringifySnapshot(snapshot)
+	const blob: Blob = new Blob([lzstr])
+	saveAs(blob, `particle-life-3d-snapshot-${snapshot.id}.txt`)
+}
+
+function importSnapshot(lzstr: string): void {
+	try {
+		const snapshot: Snapshot = parseSnapshot(lzstr)
+		applySnapshot(snapshot)
+	} catch (err: any) {
+		message.error(String(err))
+	}
+}
+
 type KeyboardShortcut = {
 	kbd: string | string[]
 	description: string
@@ -58,6 +99,33 @@ function App() {
 	const [form] = Form.useForm()
 	const store = useStore()
 	const { t, i18n } = useTranslation('translations')
+
+	const handleCopySnapshot = (snapshot: Snapshot, event: MouseEvent): void => {
+		event.stopPropagation()
+		copySnapshotToClipboard(snapshot)
+		message.info(t('Đã lưu bản ghi vào khay nhớ tạm'))
+	}
+
+	const handleDownloadSnapshot = (snapshot: Snapshot, event: MouseEvent): void => {
+		event.stopPropagation()
+		downloadSnapshot(snapshot)
+	}
+
+	const uploadSnapshot = (): void => {
+		const inputEl = document.createElement('input')
+		inputEl.type = 'file'
+		inputEl.accept = 'text/plain'
+		inputEl.addEventListener('change', () => {
+			if (inputEl.files) {
+				inputEl.files[0].text().then(importSnapshot)
+			}
+		})
+		inputEl.click()
+	}
+
+	const pasteSnapshot = (): void => {
+		navigator.clipboard.readText().then(importSnapshot)
+	}
 
 	const keyboardShortcuts = useMemo<KeyboardShortcut[]>(
 		() => [
@@ -145,6 +213,10 @@ function App() {
 	}, [store.maxG])
 
 	useEffect(() => {
+		form.setFieldValue('maxInteractionDistance', store.maxInteractionDistance)
+	}, [store.maxInteractionDistance])
+
+	useEffect(() => {
 		form.setFieldValue('pushBackForce', store.pushBackForce)
 	}, [store.pushBackForce])
 
@@ -153,8 +225,9 @@ function App() {
 	}, [store.spinningSpeed])
 
 	useEffect(() => {
-		setTimeout(() => {
-			message.info(
+		setTimeout(async () => {
+			await message.info(t('Nhấn chuột vào trang web để có thể nghe thấy âm thanh'), 10)
+			await message.info(
 				<Trans t={t}>
 					Nhấn <Tag className="mr-0">R</Tag> để xáo trộn các hạt
 				</Trans>,
@@ -164,12 +237,12 @@ function App() {
 	}, [])
 
 	return (
-		<ConfigProvider theme={darkTheme}>
+		<ConfigProvider theme={antdTheme}>
 			<div className="absolute inset-0 flex justify-between items-start pointer-events-none">
 				<div className="flex flex-col 2xl:w-[400px] xl:w-[360px] w-[340px] h-full p-4 pb-2 pr-2 overflow-x-hidden pointer-events-auto">
 					<Divider className="!m-0 !mb-2">{t('Bảng điều khiển')}</Divider>
 
-					<div className="flex-1 overflow-x-hidden">
+					<div className="flex-1 overflow-x-hidden scrollbar-thin">
 						<Form
 							form={form}
 							labelCol={{ span: 14 }}
@@ -198,6 +271,14 @@ function App() {
 										<InputNumber min={-10000} max={10000} />
 									</Form.Item>
 								</Space.Compact>
+							</Form.Item>
+
+							<Form.Item
+								label={t('Khoảng cách tương tác giữa các hạt')}
+								name="maxInteractionDistance"
+								rules={[{ required: true }]}
+							>
+								<InputNumber min={0} max={999990} />
 							</Form.Item>
 
 							<Form.Item
@@ -281,6 +362,13 @@ function App() {
 								/>
 							</Form.Item>
 
+							<Form.Item label="Nhập bản ghi">
+								<Button.Group>
+									<Button onClick={() => uploadSnapshot()}>Tải lên</Button>
+									<Button onClick={() => pasteSnapshot()}>Dán</Button>
+								</Button.Group>
+							</Form.Item>
+
 							<Form.Item label="Language / Ngôn ngữ">
 								<Select
 									popupMatchSelectWidth={false}
@@ -332,11 +420,13 @@ function App() {
 							</a>
 							<Divider type="vertical" />
 
-							<Tooltip title="ko-fi.com/tientq64">
-								<a className="text-sky-400" href="https://ko-fi.com/tientq64" target="_blank">
-									Buy me a coffee
-								</a>
-							</Tooltip>
+							<a
+								className="text-sky-400"
+								href="https://github.com/tientq64/particle-life-3d?tab=readme-ov-file#-support-me"
+								target="_blank"
+							>
+								Buy me a coffee
+							</a>
 						</li>
 					</ul>
 				</div>
@@ -344,7 +434,7 @@ function App() {
 				<div className="flex flex-col 2xl:w-[400px] xl:w-[360px] w-[340px] h-full p-4 pb-2 pl-2 2xl:pr-6 xl:pr-4 pointer-events-auto">
 					<Divider className="!m-0">{t('Phím tắt')}</Divider>
 
-					<div className="h-2/3 overflow-x-hidden">
+					<div className="h-2/3 overflow-x-hidden scrollbar-thin">
 						<List
 							size="small"
 							dataSource={keyboardShortcuts}
@@ -373,17 +463,30 @@ function App() {
 
 					<Divider className="!m-0">{t('Lịch sử')}</Divider>
 
-					<div className="h-1/3 overflow-x-hidden">
+					<div className="h-1/3 overflow-x-hidden scrollbar-thin">
 						<List
 							size="small"
 							dataSource={store.snapshots.toReversed()}
 							renderItem={(snapshot) => (
 								<List.Item
 									key={snapshot.id}
-									className="hover:bg-gray-700/30 cursor-pointer"
+									className="flex items-center hover:bg-gray-700/30 cursor-pointer"
 									onClick={() => applySnapshot(snapshot)}
 								>
-									{snapshot.id.substring(0, 7)}
+									<div className="flex-1">{snapshot.id.substring(0, 7)}</div>
+									<div className="flex gap-1 items-center">
+										<Button
+											type="text"
+											icon={<Icon name="copy" />}
+											onClickCapture={(event) => handleCopySnapshot(snapshot, event)}
+										/>
+
+										<Button
+											type="text"
+											icon={<Icon name="download" />}
+											onClick={(event) => handleDownloadSnapshot(snapshot, event)}
+										/>
+									</div>
 								</List.Item>
 							)}
 						/>

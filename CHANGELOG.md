@@ -1,5 +1,20 @@
 # Changelog
 
+# [1.3.0]() (2024-06-11)
+
+### ✨ Features
+
+- Add maximum interaction distance between particles.
+- Export and import particles world snapshots.
+
+### 🛠 Improvements
+
+- Add force range when randomly generated to snapshot.
+
+### 📦 Build
+
+- Remove `manualChunks` vite configuration. Avoid unwanted potential bugs.
+
 # [1.2.1]() (2024-06-08)
 
 ### 📦 Build

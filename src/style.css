@@ -1,2 +1,8 @@
 @tailwind base;
 @tailwind utilities;
+
+@layer utilities {
+	.scrollbar-thin {
+		scrollbar-width: thin;
+	}
+}

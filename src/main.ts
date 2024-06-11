@@ -69,7 +69,7 @@ function rule(groupA: Group, groupB: Group): void {
 			if (particle === particleB) continue
 
 			let [d, dx, dy, dz] = getDistancesBetweenTwoVectors(particle.translate, particleB.translate)
-			if (d && d >= 0 && d <= 400) {
+			if (d && d >= 0 && d <= store.maxInteractionDistance) {
 				let f = (g * 1) / d
 				fx += f * dx
 				fy += f * dy
@@ -182,6 +182,8 @@ export function captureSnapshot(): void {
 
 export function applySnapshot(snapshot: Snapshot): void {
 	store.setRadius(snapshot.radius)
+	store.setMinG(snapshot.minG ?? store.minG)
+	store.setMaxG(snapshot.maxG ?? store.maxG)
 	store.setPushBackForce(snapshot.pushBackForce)
 	store.setIsCheckCollision(snapshot.isCheckCollision)
 	setTimeout(() => {
