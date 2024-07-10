@@ -10,7 +10,7 @@ export function viteSingleFile(): PluginOption {
 		enforce: 'post',
 
 		generateBundle(_, bundle) {
-			let htmlAsset!: OutputAsset
+			let htmlAsset: OutputAsset | null = null
 
 			for (const fileName in bundle) {
 				const asset = bundle[fileName] as OutputAsset
@@ -19,7 +19,7 @@ export function viteSingleFile(): PluginOption {
 					break
 				}
 			}
-			if (htmlAsset === undefined) return
+			if (htmlAsset === null) return
 
 			const dom = new JSDOM(htmlAsset.source)
 			const { document } = dom.window
